@@ -2,61 +2,39 @@
 <html lang="en">
 	<head>
 		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
-		<script src="Grid.js"></script>
-		<script src="Display.js"></script>
+		<style>
+			body {
+				background:black;
+				color:#50ff50;
+				text-align:center;
+				font-weight:bold;
+				font-family: 'courier';
+			}
+		</style>
 		<script src="setups.js"></script>
+		<script src="Grid.js"></script>
 		<script src="Time.js"></script>
+		<script src="simulateGeneration.js"></script>
+		<script src="display.js"></script>
 		<script>
-			var display,time,activeGrid,secondGrid;
+			var display,time,activeGrid,secondGrid,maxAge;
 			window.onload = function(){
-				var gridA = new Grid(30,30);
+				var maxAge = 5;
+				var gridA = new Grid(40,40);
 				var gridB = gridA.clone();
+				var displayDiv = document.getElementById('canvas');
+				//start with a randomly-generated 'life field'
 				setupRandom(gridA);
-				activeGrid = gridA;
-				secondGrid = gridB;
-				display = new Display(2,activeGrid,document.getElementById('canvas'));
-				time = new Time(1,function(){
-					activeGrid.forEach(function(r,c,cellState){
-						console.log(cellState);
-						//determine neighbors
-						var neighbors = [
-							{r:r-1, c:c-1},	
-							{r:r-1, c:c-0},	
-							{r:r-1, c:c+1},	
-							{r:r-0, c:c-1},	
-							{r:r-0, c:c+1},	
-							{r:r+1, c:c-1},	
-							{r:r+1, c:c-0},	
-							{r:r+1, c:c+1}
-						];
-						//count living neighbors
-						var livingNeighbors = 0;
-						for(var i in neighbors){
-							var n = neighbors[i];
-							if(activeGrid.cellExists(n.r,n.c) && activeGrid.get(n.r,n.c) > 0) livingNeighbors++;
-						}
-
-						//act on the cell depending on living neighbors
-						var ln = livingNeighbors;
-						if(ln == 2){ //stable.  still dead or still alive
-							if(cellState > 0) secondGrid.set(r,c,cellState + 1);//age the cell if it's alive
-						} else if(ln==3){ //life! still alive or newborn if empty
-							if(cellState > 0){
-								secondGrid.set(r,c,cellState + 1);//age the cell
-							} else {
-								secondGrid.set(r,c,1);//newborn
-							}
-						} else if(ln < 2 || ln > 3){//cell dies of loneliness/overcrowding
-							if(cellState) secondGrid.set(r,c,0);//make sure it's dead
-						}
-
-						//alternate active/second grids
-						var temp = activeGrid;
-						activeGrid = secondGrid;
-						secondGrid = temp;
-					});
+				//the time simulator, which ticks @ 20Hz, drives the life cycle
+				time = new Time(20,function(){
+					simulateGeneration(gridA,gridB,maxAge);
+					display(gridB,displayDiv);
+					//alternate active/second grids
+					var temp = gridA;
+					gridA = gridB;
+					gridB = temp;
 				});
-				display.start();
+				//let's go!
 				time.start();
 			}
 		</script>
