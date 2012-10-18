@@ -1,3 +1,12 @@
+<!--
+		NEXT:
+			add additional setup methods (from definable patterns)
+			add GUI controls:
+				time
+				maxAge
+				grid size
+				setup method
+-->
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -19,8 +28,8 @@
 		<script>
 			var display,time,activeGrid,secondGrid,maxAge;
 			window.onload = function(){
-				var maxAge = 5;
-				var gridA = new Grid(40,40);
+				maxAge = 5;
+				var gridA = new Grid(30,50);
 				var gridB = gridA.clone();
 				var displayDiv = document.getElementById('life');
 				//start with a randomly-generated 'life field'
