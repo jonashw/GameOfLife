@@ -22,7 +22,7 @@
 				var maxAge = 5;
 				var gridA = new Grid(40,40);
 				var gridB = gridA.clone();
-				var displayDiv = document.getElementById('canvas');
+				var displayDiv = document.getElementById('life');
 				//start with a randomly-generated 'life field'
 				setupRandom(gridA);
 				//the time simulator, which ticks @ 20Hz, drives the life cycle
@@ -40,6 +40,6 @@
 		</script>
 	</head>
 	<body>
-		<div id="canvas"></div>
+		<div id="life"></div>
 	</body>
 </html>
