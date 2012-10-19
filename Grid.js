@@ -37,8 +37,9 @@ Grid.prototype.cellExists = function(r,c){
 Grid.prototype._checkRequestAgainstBounds = function(r,c){
 	if(!this.cellExists(r,c)) throw('grid.set(r,c,value): r (' + r + ') or c (' + c + ') is outside the grid bounds: rows('+this.rows+'), cols('+this.cols+')');
 }
-Grid.prototype.sizeCols = function(cols){
-	if(this.cols < cols){//gotta add array slots
+Grid.prototype.resizeCols = function(cols){
+	//for adding/removing columns mid-run
+	if(this.cols < cols){//gotta add values to each row
 		for(var r=0; r<this.rows; r++){
 			var temprow = this.array[r];
 			for (var c=this.cols; c<cols; c++){
@@ -46,22 +47,29 @@ Grid.prototype.sizeCols = function(cols){
 			}
 			this.array[r] = temprow;
 		}
-	} else if(this.cols > cols){//gotta remove array slots
-
+	} else if(this.cols > cols){//gotta splice values from each row
+		for(var r=0; r<this.rows; r++){
+			var temprow = this.array[r];
+			for (var c=0; c<this.cols-cols; c++){
+				temprow.pop();
+			}
+			this.array[r] = temprow;
+		}
 	}
 	this.cols = cols;
 }
-Grid.prototype.sizeRows = function(rows){
-	if(this.rows < rows){//gotta add array slots
-		for(var r=this.rows; r<rows; r++){
+Grid.prototype.resizeRows = function(rows){
+	//for adding/removing rows mid-run
+	if(this.rows < rows){//gotta add whole rows
+		for(var r=0; r<rows-this.rows; r++){
 			var temprow = [];
 			for (var c=0; c<this.cols; c++){
 				temprow.push(0);
 			}
 			this.array.push(temprow);
 		}
-	} else if(this.rows > rows){//gotta remove array slots
-
+	} else if(this.rows > rows){//gotta splice-away rows
+		for(var r=0; r<this.rows-rows; r++) this.array.pop();
 	}
 	this.rows = rows;
 }

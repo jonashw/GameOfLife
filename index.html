@@ -81,8 +81,11 @@
 					.addClass('gridInput gridCols')
 					.on('change keyupPause',function(){
 						var val = $(this).val();
-						gridA.sizeCols(val);
-					   	gridB.sizeCols(val);
+						var wasRunning = time.isRunning();
+						if(wasRunning) time.stop();
+						gridA.resizeCols(val);
+					   	gridB.resizeCols(val);
+						if(wasRunning) time.start();
 					})
 					.before('<label>columns:</label>')
 				;
@@ -92,9 +95,12 @@
 					.appendTo(toolbar)
 					.addClass('gridInput gridRows')
 					.on('change keyupPause',function(){
+						var wasRunning = time.isRunning();
+						if(wasRunning) time.stop();
 						var val = $(this).val();
-						gridA.sizeRows(val);
-					   	gridB.sizeRows(val);
+						gridA.resizeRows(val);
+					   	gridB.resizeRows(val);
+						if(wasRunning) time.start();
 					})
 					.before('<label>rows:</label>')
 				;
