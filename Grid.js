@@ -37,3 +37,31 @@ Grid.prototype.cellExists = function(r,c){
 Grid.prototype._checkRequestAgainstBounds = function(r,c){
 	if(!this.cellExists(r,c)) throw('grid.set(r,c,value): r (' + r + ') or c (' + c + ') is outside the grid bounds: rows('+this.rows+'), cols('+this.cols+')');
 }
+Grid.prototype.sizeCols = function(cols){
+	if(this.cols < cols){//gotta add array slots
+		for(var r=0; r<this.rows; r++){
+			var temprow = this.array[r];
+			for (var c=this.cols; c<cols; c++){
+				temprow.push(0);
+			}
+			this.array[r] = temprow;
+		}
+	} else if(this.cols > cols){//gotta remove array slots
+
+	}
+	this.cols = cols;
+}
+Grid.prototype.sizeRows = function(rows){
+	if(this.rows < rows){//gotta add array slots
+		for(var r=this.rows; r<rows; r++){
+			var temprow = [];
+			for (var c=0; c<this.cols; c++){
+				temprow.push(0);
+			}
+			this.array.push(temprow);
+		}
+	} else if(this.rows > rows){//gotta remove array slots
+
+	}
+	this.rows = rows;
+}

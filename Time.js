@@ -4,11 +4,16 @@ function Time(ticksPerSecond, stepFn){
 	this.loopInterval = null;
 }
 Time.prototype.start = function(){
+	if(this.isRunning()) return false;
 	var self = this;
 	this.loopInterval = setInterval(function(){self._stepForward()}, 1000/self.ticksPerSecond);
 }
+Time.prototype.isRunning = function(){
+	return !!this.loopInterval;
+}
 Time.prototype.stop = function(){
 	if(this.loopInterval) clearInterval(this.loopInterval);
+	this.loopInterval = null;
 }
 Time.prototype.step = function(numTicks){
 	var numTicks = numTicks ? numTicks : 1;

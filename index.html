@@ -12,25 +12,51 @@
 	<head>
 		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
 		<style>
+			html {
+				overflow:hidden;
+			}
 			body {
 				background:black;
 				color:#50ff50;
 				text-align:center;
 				font-weight:bold;
 				font-family: 'courier';
+				font-size:11px;
 			}
+			#toolbar{
+				position:fixed;
+				bottom:0;
+				left:0;
+			}
+			.gridInput,
+		   	.timeInput	{
+				width:30px;
+			}
+			#toolbar input,
+			#toolbar button,
+			#toolbar label{
+				margin:10px 5px;
+			}
+			#toolbar label {
+				margin-right:0;
+				font-size:14px;
+			}
+
 		</style>
 		<script src="setups.js"></script>
 		<script src="Grid.js"></script>
 		<script src="Time.js"></script>
 		<script src="simulateGeneration.js"></script>
 		<script src="display.js"></script>
+		<script src="../core/jQuery.js"></script>
+		<script src="../core/flashService.js"></script>
 		<script>
-			var display,time,activeGrid,secondGrid,maxAge;
+			var display,time,gridA,gridB,maxAge,toolbar;
+			//set up the simulation (pure javascript)
 			window.onload = function(){
 				maxAge = 5;
-				var gridA = new Grid(30,50);
-				var gridB = gridA.clone();
+				gridA = new Grid(40,40);
+				gridB = gridA.clone();
 				var displayDiv = document.getElementById('life');
 				//start with a randomly-generated 'life field'
 				setupRandom(gridA);
@@ -45,10 +71,97 @@
 				});
 				//let's go!
 				time.start();
-			}
+
+				//set up the UI (jQuery-based)
+				toolbar = $('#toolbar');
+				var colsField = $('<input>')
+					.attr('type','number')
+					.val(gridA.cols)
+					.appendTo(toolbar)
+					.addClass('gridInput gridCols')
+					.on('change keyupPause',function(){
+						var val = $(this).val();
+						gridA.sizeCols(val);
+					   	gridB.sizeCols(val);
+					})
+					.before('<label>columns:</label>')
+				;
+				var rowsField = $('<input>')
+					.attr('type','number')
+					.val(gridA.rows)
+					.appendTo(toolbar)
+					.addClass('gridInput gridRows')
+					.on('change keyupPause',function(){
+						var val = $(this).val();
+						gridA.sizeRows(val);
+					   	gridB.sizeRows(val);
+					})
+					.before('<label>rows:</label>')
+				;
+				var timeRateField = $('<input>')
+					.attr('type','number')
+					.val(time.ticksPerSecond)
+					.appendTo(toolbar)
+					.addClass('timeInput')
+					.on('change keyupPause',function(){
+						var val = $(this).val();
+						time.setRefreshRate(val);
+					})
+					.before('<label>refresh rate<small> (ticks/second)</small>:</label>')
+				;
+				var maxAgeField = $('<input>')
+					.attr('type','number')
+					.val(maxAge)
+					.appendTo(toolbar)
+					.addClass('gridInput')
+					.on('change keyupPause',function(){
+						var val = $(this).val();
+						maxAge = val;
+					})
+					.before('<label>maximum cell age:</label>')
+				;
+				var resetBtn = $('<button></button>')
+					.text('reset')
+					.appendTo(toolbar)
+					.on('click',function(){
+						setupRandom(gridA);
+						startBtn.trigger('click');
+					})
+				;
+				var stopBtn = $('<button></button>')
+					.text('pause')
+					.appendTo(toolbar)
+					.on('click',function(){
+						time.stop();
+						$(this).hide();
+						startBtn.show();
+						stepBtn.show();
+					})
+				;
+				var startBtn = $('<button></button>')
+					.text('resume')
+					.appendTo(toolbar)
+					.hide()
+					.on('click',function(){
+						time.start();
+						$(this).hide();
+						stopBtn.show();
+						stepBtn.hide();
+					})
+				;
+				var stepBtn = $('<button></button>')
+					.text('step one tick')
+					.appendTo(toolbar)
+					.hide()
+					.on('click',function(){
+						time.step();
+					})
+				;
+			};
 		</script>
 	</head>
 	<body>
 		<div id="life"></div>
+		<div id="toolbar"></div>
 	</body>
 </html>
