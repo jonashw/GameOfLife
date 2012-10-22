@@ -27,6 +27,8 @@
 				position:fixed;
 				bottom:0;
 				left:0;
+				background:#111;
+				right:0;
 			}
 			.gridInput,
 		   	.timeInput	{
@@ -162,6 +164,13 @@
 					.on('click',function(){
 						time.step();
 					})
+				;
+				var infoLink = $('<a></a>')
+					.text('info')
+					.attr('href','http://www.math.com/students/wonders/life/life.html')
+					.attr('target','_blank')
+					.css('margin-left','2em')
+					.appendTo(toolbar)
 				;
 			};
 		</script>
