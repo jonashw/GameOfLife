@@ -137,33 +137,35 @@
 					})
 				;
 				var stopBtn = $('<button></button>')
-					.text('pause')
+					.text(' pause ')
+					.css('width','5em')
 					.appendTo(toolbar)
 					.on('click',function(){
 						time.stop();
 						$(this).hide();
 						startBtn.show();
-						stepBtn.show();
+						stepBtn.removeAttr('disabled');
 					})
 				;
 				var startBtn = $('<button></button>')
 					.text('resume')
+					.css('width','5em')
 					.appendTo(toolbar)
 					.hide()
 					.on('click',function(){
 						time.start();
 						$(this).hide();
 						stopBtn.show();
-						stepBtn.hide();
+						stepBtn.attr('disabled','true')
 					})
 				;
 				var stepBtn = $('<button></button>')
 					.text('step one tick')
 					.appendTo(toolbar)
-					.hide()
 					.on('click',function(){
 						time.step();
 					})
+					.attr('disabled','true')
 				;
 				var infoLink = $('<a></a>')
 					.text('info')
