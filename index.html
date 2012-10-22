@@ -17,7 +17,7 @@
 		<script src="../core/jQuery.js"></script>
 		<script src="../core/flashService.js"></script>
 		<script>
-			var display,time,gridA,gridB,maxAge,toolbar;
+			var display,time,gridA,gridB,maxAge,toolbar,flasher;
 			//set up the simulation (pure javascript)
 			window.onload = function(){
 				maxAge = 5;
@@ -30,7 +30,7 @@
 				time = new Time(20,function(){
 					if(simulateGeneration(gridA, gridB, maxAge) == 0){
 						time.stop();
-						alert('all cells have died T__T');		
+						flasher.addMessage('all cells have died ;__;');		
 					}
 					display(gridB,displayDiv);
 					//alternate active/second grids
@@ -43,6 +43,25 @@
 
 				//set up the UI (jQuery-based)
 				toolbar = $('#toolbar');
+				flasher = {
+					addMessage: function(message){
+						$('<div></div>')
+							.text(message)
+							.css({
+								'position':'absolute',
+								'top':$(window).height()/3,
+								'left':'50px',
+								'font-size':'3em',
+								'z-index':100
+							})
+							.hide()
+							.appendTo($('body'))
+							.fadeIn()
+							.delay(1500)
+							.fadeOut()
+						;
+					}
+				};
 				var colsField = $('<input>')
 					.attr('type','number')
 					.val(gridA.cols)
