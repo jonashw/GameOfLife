@@ -64,7 +64,10 @@
 				setupRandom(gridA);
 				//the time simulator, which ticks @ 20Hz, drives the life cycle
 				time = new Time(20,function(){
-					simulateGeneration(gridA,gridB,maxAge);
+					if(simulateGeneration(gridA, gridB, maxAge) == 0){
+						time.stop();
+						alert('all cells have died T__T');		
+					}
 					display(gridB,displayDiv);
 					//alternate active/second grids
 					var temp = gridA;

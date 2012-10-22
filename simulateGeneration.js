@@ -1,8 +1,12 @@
 function simulateGeneration(activeGrid,secondGrid,maxAge){
+	var totalLivingCells = 0;
 	activeGrid.forEach(function(r,c,cellState){
-		if(cellState && cellState >= maxAge){
-			secondGrid.set(r,c,0);//kill old cells
-			return;
+		if(cellState){
+			if(cellState >= maxAge){
+				secondGrid.set(r,c,0);//kill old cells
+				return;
+			}
+			totalLivingCells++;
 		}
 		//determine neighbors
 		var neighbors = [
@@ -36,5 +40,5 @@ function simulateGeneration(activeGrid,secondGrid,maxAge){
 			if(cellState) secondGrid.set(r,c,0);//make sure it's dead
 		}
 	});
+	return totalLivingCells;
 }
-
