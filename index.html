@@ -30,7 +30,7 @@
 				time = new Time(20,function(){
 					if(simulateGeneration(gridA, gridB, maxAge) == 0){
 						time.stop();
-						flasher.addMessage('all cells have died ;__;');		
+						flasher.addMessage('all cells have died.   ;__;');
 					}
 					display(gridB,displayDiv);
 					//alternate active/second grids
@@ -44,21 +44,24 @@
 				//set up the UI (jQuery-based)
 				toolbar = $('#toolbar');
 				flasher = {
+					element: $('<div></div>')
+						.appendTo($('body'))
+						.css({
+							'position':'absolute',
+							'top':$(window).height()/3,
+							'left':'50px',
+							'font-size':'3em',
+							'z-index':100
+						})
+					,
 					addMessage: function(message){
 						$('<div></div>')
 							.text(message)
-							.css({
-								'position':'absolute',
-								'top':$(window).height()/3,
-								'left':'50px',
-								'font-size':'3em',
-								'z-index':100
-							})
 							.hide()
-							.appendTo($('body'))
+							.appendTo(this.element)
 							.fadeIn()
-							.delay(1500)
-							.fadeOut()
+							.delay(2000)
+							.fadeOut(function(){$(this).remove();})
 						;
 					}
 				};
