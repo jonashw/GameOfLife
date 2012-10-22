@@ -15,6 +15,7 @@
 		<script src="simulateGeneration.js"></script>
 		<script src="display.js"></script>
 		<script src="../core/jQuery.js"></script>
+		<script src="../core/EventRegistry.js"></script>
 		<script src="../core/flashService.js"></script>
 		<script>
 			var display,time,gridA,gridB,maxAge,toolbar,flasher;
@@ -30,7 +31,7 @@
 				time = new Time(20,function(){
 					if(simulateGeneration(gridA, gridB, maxAge) == 0){
 						time.stop();
-						flasher.addMessage('all cells have died.   ;__;');
+						EventRegistry.notifyListeners(time,'all_dead');
 					}
 					display(gridB,displayDiv);
 					//alternate active/second grids
@@ -122,7 +123,7 @@
 					.appendTo(toolbar)
 					.on('click',function(){
 						setupRandom(gridA);
-						startBtn.trigger('click');
+						time.start();
 					})
 				;
 				var stopBtn = $('<button></button>')
@@ -131,9 +132,6 @@
 					.appendTo(toolbar)
 					.on('click',function(){
 						time.stop();
-						$(this).hide();
-						startBtn.show();
-						stepBtn.removeAttr('disabled');
 					})
 				;
 				var startBtn = $('<button></button>')
@@ -143,9 +141,6 @@
 					.hide()
 					.on('click',function(){
 						time.start();
-						$(this).hide();
-						stopBtn.show();
-						stepBtn.attr('disabled','true')
 					})
 				;
 				var stepBtn = $('<button></button>')
@@ -156,6 +151,24 @@
 					})
 					.attr('disabled','true')
 				;
+				EventRegistry.addListener(time,'start',function(){
+					startBtn.removeAttr('disabled');
+					startBtn.hide();
+					stopBtn.show();
+					stepBtn.attr('disabled','true')
+				});
+				EventRegistry.addListener(time,'stop',function(){
+					startBtn.show();
+					stopBtn.hide();
+					stepBtn.removeAttr('disabled');
+				});
+				EventRegistry.addListener(time,'all_dead',function(){
+					flasher.addMessage('all cells have died.   ;__;');
+					stepBtn.attr('disabled','true')
+					stopBtn.hide();
+					startBtn.show();
+					startBtn.attr('disabled','true');
+				});
 				var infoLink = $('<a></a>')
 					.text('info')
 					.attr('href','http://www.math.com/students/wonders/life/life.html')
